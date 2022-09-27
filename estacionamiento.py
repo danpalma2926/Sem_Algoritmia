@@ -1,8 +1,11 @@
 import os, time
+from datetime import datetime
 
 class Estacionamiento:
     def __init__(self):
         self.lista = []
+        self.cambio = [100, 50, 20, 10, 5, 2, 1]
+        self.precio_cuarto = 20
 
     def agregar_vehiculo(self, vehiculo_nuevo):
         self.lista.append(vehiculo_nuevo)
@@ -26,7 +29,7 @@ class Estacionamiento:
                 costo_total = vehiculo.costo_total
             else:
                 costo_total = "--" 
-            print(f"Placas: {vehiculo.placas}\tHora Entrada: {vehiculo.hora_entrada}\t", end="")
+            print(f"Placas: {vehiculo.placas}\tHora Entrada: {vehiculo.hora_entrada.strftime('%d/%m/%Y %H:%M')}\t", end="")
             print(f"Hora Salida: {hora_salida}\tCosto Total: {costo_total}")
 
 class Vehiculo:
@@ -38,23 +41,34 @@ class Vehiculo:
         
 def agregar_vehiculo(estacionamiento):
     os.system("cls")
-    print(f"Agregar contacto")
+    print(f"Agregar vehiculo")
     
     Placas = input(f"Ingrese Placa\n")
-    Hora_Entrada = input(f"Ingrese Hora de Entrada\n")
+    Hora_Entrada = datetime.now()
 
-    estacionamiento.insertar_vehiculo(Vehiculo(Placas, Hora_Entrada))
+    estacionamiento.agregar_vehiculo(Vehiculo(Placas, Hora_Entrada))
     print(f"Vehiculo agregado!! \nPresione Enter para continuar")
     input()
     os.system("cls")
 
 def pagar_vehiculo(estacionamiento):
-    pass
+    os.system("cls")
+    print(f"Pagar Vehiculo")
+
+    Hora_Salida = input(f"Ingrese hora de salida (Formato hora:minuto)\n")
+
+    
+
+
+    print(f"Cuota Pagada!! \nPresione Enter para continuar")
+    input()
+    os.system("cls")
+
 
 def mostrar_vehiculos(estacionamiento):
     os.system("cls")
     print(f"Mostando {len(estacionamiento.lista)} vehiculos:")
-    estacionamiento.vehiculos()
+    estacionamiento.mostrar_vehiculos()
 
     print(f"\nPresione Enter para continuar")
     input()
