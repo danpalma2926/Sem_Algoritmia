@@ -4,7 +4,7 @@ from datetime import datetime
 class Estacionamiento:
     def __init__(self):
         self.lista = []
-        self.tipos_de_cambio = [200, 100, 50, 20, 10, 5, 2, 1]
+        self.tipos_de_cambio = [500, 200, 100, 50, 20, 10, 5, 2, 1]
         self.precio_cuarto = 20
 
     def agregar_vehiculo(self, vehiculo_nuevo):
