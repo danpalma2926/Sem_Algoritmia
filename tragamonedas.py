@@ -2,6 +2,7 @@ import random
 import time
 import os
 import keyboard
+import pdb
 print()
 print('''Welcome to the Slot Machine 
 You'll start with £50. You'll be asked if you want to play.
@@ -17,7 +18,7 @@ CHERRY\tCHERRY\t  -\t\tpays\t£5
 CHERRY\t  -\t  -\t\tpays\t£2
 7\t  7\t  7\t\tpays\t The Jackpot!
 ''')
-time.sleep(10)
+time.sleep(3)
 #Constants:
 INIT_STAKE = 50
 INIT_BALANCE = 1000
@@ -32,11 +33,19 @@ balance = INIT_BALANCE
 def play():
     global stake, firstWheel, secondWheel, thirdWheel
     playQuestion = askPlayer()
+    slots = [firstWheel, secondWheel, thirdWheel]
     while(stake != 0 and playQuestion == True):
-        firstWheel = spinWheel()
-        secondWheel = spinWheel()
-        thirdWheel = spinWheel()
-        printScore()
+        ciclo = 0
+        while ciclo != 3:
+            for i in range(ciclo, 3, 1):
+                slots[i] = spinWheel()
+            print(slots[0] + '\t' + slots[1] + '\t' + slots[2])
+            time.sleep(.22)
+            os.system('cls' if os.name == 'nt' else 'clear')
+            if keyboard.is_pressed("a"):
+                ciclo += 1
+                
+        printScore(slots)        
         playQuestion = askPlayer()
 
 def askPlayer():
@@ -61,7 +70,7 @@ def askPlayer():
             return True
         elif(answer == "no" or answer == "n"):
             print("\nYou ended the game with £" + str(stake) + " in your hand.")
-            time.sleep(5)
+            time.sleep(2)
             return False
         else:
             print("Whoops! Didn't get that.")
@@ -73,33 +82,33 @@ def spinWheel():
     randomNumber = random.randint(0, 5)
     return ITEMS[randomNumber]
 
-def printScore():
+def printScore(slots):
     '''
     prints the current score
     '''
-    global stake, firstWheel, secondWheel, thirdWheel, balance
-    if((firstWheel == "CHERRY") and (secondWheel != "CHERRY")):
+    global stake, balance
+    if((slots[0] == "CHERRY") and (slots[1] != "CHERRY")):
         win = 2
         balance = balance - 2
-    elif((firstWheel == "CHERRY") and (secondWheel == "CHERRY") and (thirdWheel != "CHERRY")):
+    elif((slots[0] == "CHERRY") and (slots[1] == "CHERRY") and (slots[2] != "CHERRY")):
         win = 5
         balance = balance - 5
-    elif((firstWheel == "CHERRY") and (secondWheel == "CHERRY") and (thirdWheel == "CHERRY")):
+    elif((slots[0] == "CHERRY") and (slots[1] == "CHERRY") and (slots[2] == "CHERRY")):
         win = 7
         balance = balance - 7
-    elif((firstWheel == "ORANGE") and (secondWheel == "ORANGE") and ((thirdWheel == "ORANGE") or (thirdWheel == "BAR"))):
+    elif((slots[0] == "ORANGE") and (slots[1] == "ORANGE") and ((slots[2] == "ORANGE") or (slots[2] == "BAR"))):
         win = 10
         balance = balance - 10
-    elif((firstWheel == "PLUM") and (secondWheel == "PLUM") and ((thirdWheel == "PLUM") or (thirdWheel == "BAR"))):
+    elif((slots[0] == "PLUM") and (slots[1] == "PLUM") and ((slots[2] == "PLUM") or (slots[2] == "BAR"))):
         win = 14
         balance = balance - 14
-    elif((firstWheel == "BELL") and (secondWheel == "BELL") and ((thirdWheel == "BELL") or (thirdWheel == "BAR"))):
+    elif((slots[0] == "BELL") and (slots[1] == "BELL") and ((slots[2] == "BELL") or (slots[2] == "BAR"))):
         win = 20
         balance = balance - 20
-    elif((firstWheel == "BAR") and (secondWheel == "BAR") and (thirdWheel == "BAR")):
+    elif((slots[0] == "BAR") and (slots[1] == "BAR") and (slots[2] == "BAR")):
         win = 250
         balance = balance - 250
-    elif((firstWheel == "7") and (secondWheel == "7") and (thirdWheel == "7")):
+    elif((slots[0] == "7") and (slots[1] == "7") and (slots[2] == "7")):
         win = balance
         balance = balance - win
     else:
@@ -110,11 +119,11 @@ def printScore():
     if win == balance:
         print ("You won the JACKPOT!!")
     if(win > 0):
-        print(firstWheel + '\t' + secondWheel + '\t' + thirdWheel + ' -- You win £' + str(win))
+        print(slots[0] + '\t' + slots[1] + '\t' + slots[2] + ' -- You win £' + str(win))
         time.sleep(3)
         os.system('cls' if os.name == 'nt' else 'clear')
     else:
-        print(firstWheel + '\t' + secondWheel + '\t' + thirdWheel + ' -- You lose')
+        print(slots[0] + '\t' + slots[1] + '\t' + slots[2] + ' -- You lose')
         time.sleep(2)
         os.system('cls' if os.name == 'nt' else 'clear')
 
