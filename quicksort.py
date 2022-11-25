@@ -1,12 +1,11 @@
-import os
-import argparse, pathlib
+import os, argparse, pathlib
 from datetime import datetime
 
 def partition(list, low, high):
-    pivot = list[high][1]
+    pivot = list[high].stat().st_ctime
     i = low - 1
     for j in range(low, high):
-        if list[j][1] <= pivot:
+        if list[j].stat().st_ctime <= pivot:
             i += 1
             list[i], list[j] = list[j], list[i]
     list[i+1], list[high] = list[high], list[i+1]
@@ -22,16 +21,10 @@ def main(path):
     print(f"Ordenando archivos en el directorio '{path}': ({len(os.listdir(path))}) archivos")
     lista = []
     for filename in os.listdir(path):
-        archivo = []
-        file_name = pathlib.Path(os.path.join(path, filename))
-        c_timestamp = file_name.stat().st_ctime 
-        archivo.append(file_name.name)
-        archivo.append(c_timestamp)
-        lista.append(archivo)
-        # Ordenamiento por Quicksort
-        quicksort(lista, 0, len(lista) - 1)
+        lista.append(pathlib.Path(os.path.join(path, filename)))
+    quicksort(lista, 0, len(lista) - 1) # Ordenamiento por Quicksort
     for elemento in lista:
-        print(f"\t{datetime.fromtimestamp(elemento[1])}\t{elemento[0]}")
+        print(f"\t{datetime.fromtimestamp(elemento.stat().st_ctime)}\t{elemento.name}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
