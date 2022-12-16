@@ -1,20 +1,6 @@
 import random, time, os, keyboard
 import pdb
 
-print('''
-TRAGA MONEDAS
-Combinaciones Ganadoras:
-BAR\tBAR\tBAR\t\tgana\t$250
-CAMP\tCAMP\tCAMP/BAR\tgana\t$20
-CIRUE\tCIRUE\tCIRUE/BAR\tgana\t$14
-NARAN\tNARAN\tNARAN/BAR\tgana\t$10
-CEREZ\tCEREZ\tCEREZ\t\tgana\t$7
-CEREZ\tCEREZ\t  -\t\tgana\t$5
-CEREZ\t  -\t  -\t\tgana\t$2
-7\t  7\t  7\t\tgana\t El premio mayor!
-''')
-time.sleep(3)
-
 APUESTA_INICIAL = 50
 BALANCE_INICIAL = 1000
 OPCIONES = ["CEREZ", "LIMON", "NARAN", "CIRUE", "CAMP", "BAR", "7"]
@@ -23,36 +9,66 @@ ruleta1, ruleta2, ruleta3 = None, None, None
 fondos = APUESTA_INICIAL
 balance = BALANCE_INICIAL
 
-def play():
+def flush_input():
+    try:
+        import msvcrt
+        while msvcrt.kbhit():
+            msvcrt.getch()
+    except ImportError:
+        import sys, termios
+        termios.tcflush(sys.stdin, termios.TCIOFLUSH)
+
+def imprimirReglas():
+    os.system('cls')
+    print('''
+    TRAGA MONEDAS
+    Combinaciones Ganadoras:
+    BAR\t\tBAR\t\tBAR\t\tgana\t$250
+    CAMP\tCAMP\tCAMP/BAR\tgana\t$20
+    CIRUE\tCIRUE\tCIRUE/BAR\tgana\t$14
+    NARAN\tNARAN\tNARAN/BAR\tgana\t$10
+    CEREZ\tCEREZ\tCEREZ\t\tgana\t$7
+    CEREZ\tCEREZ\t  -\t\tgana\t$5
+    CEREZ\t  -\t  -\t\tgana\t$2
+    7\t  7\t  7\t\tgana\t\t El premio mayor!
+    ''')
+    time.sleep(6)
+
+def main():
     global fondos, ruleta1, ruleta2, ruleta3
-    playQuestion = askPlayer()
+    imprimirReglas()
+    opc = menu()
     slots = [ruleta1, ruleta2, ruleta3]
-    while(fondos != 0 and playQuestion == True):
+    while(fondos != 0 and opc == True):
         ciclo = 0
         while ciclo != 3:
             for i in range(ciclo, 3, 1):
-                slots[i] = spinWheel()
+                slots[i] = ruleta()
             print(slots[0] + '\t' + slots[1] + '\t' + slots[2])
             time.sleep(.18)
             os.system('cls')
             if keyboard.is_pressed("a"):
                 ciclo += 1
                 
-        printScore(slots)        
-        playQuestion = askPlayer()
+        imprimirPuntaje(slots)  
+        flush_input()      
+        opc = menu()
 
-def askPlayer():
+def menu():
     global fondos
     global balance
     while(True):
-        os.system('cls' if os.name == 'nt' else 'clear')
+        os.system('cls')
         if (balance <=1):
             print ("Volviendo a agregar fondos.")
             balance = 1000
 
-        print ("El premio mayor es: $" + str(balance) + ".")
-        print ("Actualmente tiene $" + str(fondos) + ".")
-        answer = input("Desea jugar? ")
+        print("El premio mayor es: $" + str(balance) + ".")
+        print("Actualmente tiene $" + str(fondos) + ".")
+        print("'s' o 'si' para continuar jugando")
+        print("'n' o 'no' para salir del programa")
+        print("'r' o 'reglas' para visualizar las reglas dej juego")
+        answer = input("Opcion: ")
         answer = answer.lower()
         if(answer == "si" or answer == "s"):
             return True
@@ -60,14 +76,16 @@ def askPlayer():
             print("\nHas terminado el juego con $" + str(fondos))
             time.sleep(2)
             return False
+        elif(answer == "reglas" or answer == "r"):
+            imprimirReglas()
         else:
             print("Opcion no valida!.")
             time.sleep(2)
-def spinWheel():
-    randomNumber = random.randint(0, 5)
+def ruleta():
+    randomNumber = random.randint(0, 6)
     return OPCIONES[randomNumber]
 
-def printScore(slots):
+def imprimirPuntaje(slots):
     global fondos, balance
     if((slots[0] == "CEREZ") and (slots[1] != "CEREZ")):
         win = 2
@@ -109,4 +127,4 @@ def printScore(slots):
         time.sleep(2)
         os.system('cls')
 
-play()
+main()
